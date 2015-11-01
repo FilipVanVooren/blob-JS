@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="scripts/helper/crypto-3.1.2_md5.js"></script>
+    <script type="text/javascript" src="scripts/helper/lib-typedarrays-min.js"></script>
+    <script type="text/javascript" src="scripts/blob-1.2.js"></script>
+  	<script type="text/javascript" src="gui/scripts/jquery-1.9.1.min.js"></script>
+
+    <style  type="text/css">
+        .drop_zone { width            : 950px;
+                     height           : 100px;
+                     border           : solid 5px #000000;
+                     border-radius    : 10px;
+                     vertical-align   : middle;
+                     margin-bottom    : 30px;
+                     text-align       : center;
+                     background-color : #10530e;
+                     padding-top      : 30px;
+                   }
+
+        .drop_zone div { font-size   : 38px;
+                         padding-top : 20px;
+                         text-align  : center;
+                       }
+
+        div#code_zone { width            : 1200px;
+                        height           : 480px;
+                        border           : solid 8px;
+                        border-radius    : 10px;
+                        background-color : #000000;
+                      }
+
+        div#code  { width            : 100%;
+		                height           : 100%;
+					          overflow-x       : auto;
+					          overflow-y       : scroll;
+					          background-color : #000000;
+			            }
+
+        .style1     { font : 48px/72px 'BitstreamVeraSansMonoRoman', Arial, sans-serif;  color: #FFFFFF;    }
+        .style2     { font : 48px/72px 'BitstreamVeraSansMonoRoman', Arial, sans-serif;  color: #FFFFFF;    }
+        .style3     { font : 24px/48px 'BitstreamVeraSansMonoRoman', Arial, sans-serif;  color: #FFFFFF;    }
+        .style4     { font : 12px/24px 'BitstreamVeraSansMonoRoman', Arial, sans-serif;  color: #FFFFFF;    }
+        pre         { font-size: 11px;  color: #FFFFFF;    }
+        a           { color: #FFFFFF; }
+        body        { background-color : #443b3b;
+                      background-image : url(gui/images/grid_4k_3840_2160_dark.png)
+                    }
+     </style>
+
+    <script type="text/javascript">
+
+	  function checkMD5() {
+          if ($('#md5_checkbox').is(':checked') == false)
+		          { blobJS.disableMD5(); }
+		     else { blobJS.enableMD5();  }
+	  }
+
+      function handleFileSelect(evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+
+        files = evt.dataTransfer.files; // FileList object.
+
+		blobJS.init(files);
+
+        // files is a FileList of File objects. List some properties.
+        var output = [];
+        for (var i = 0, f; f = files[i]; i++) {
+          output.push('<span class="style3"><b>', escape(f.name), '</b> (', f.type || 'n/a', ') - ',
+                      f.size, ' bytes, last modified: ',
+                      f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+					  '<button onclick="SelectText(\'code\')">Mark PL/SQL code</button>',
+					  '</span>');
+
+          checkMD5();
+		  blobJS.dump(i, callback_dump);
+        }
+        document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+      }
+
+
+      function handleDragOver(evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+      }
+
+
+      function init() {
+      // Setup the dnd listeners.
+      dropZone = document.getElementById('drop_zone');
+      dropZone.addEventListener('dragover', handleDragOver, false);
+      dropZone.addEventListener('drop', handleFileSelect, false);
+
+      blobJS.init(window.DataTransfer);
+
+	  $('#md5_checkbox').click(
+	          function () {
+			     checkMD5();
+				 blobJS.dump(0, callback_dump)
+			  }
+	  );
+    }
+
+
+	  function callback_dump(p1,p2) {
+	      if (p1 == true) {
+		     $('#code').html('<pre>' + blobJS.getDump(p2) + '</pre>');
+		  }
+	  }
+
+
+      function SelectText(element) {
+        var doc  = document,
+            text = doc.getElementById(element), range, selection;
+
+            if (doc.body.createTextRange) {
+                range = document.body.createTextRange();
+                range.moveToElementText(text);
+                range.select();
+            } else if (window.getSelection) {
+                selection = window.getSelection();
+                range     = document.createRange();
+                range.selectNodeContents(text);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        }
+    </script>
+
+
+  </head>
+  <body onload="init();">
+    <center>
+      <span class="style3">
+        blob-JS v1.2 - Oracle BLOB generator<br>
+	    by Filip van Vooren - <a href="http://www.oratronik.de">www.oratronik.de</a>
+      <br><br>
+	  </span>
+
+      <div ID="drop_zone" class="drop_zone">
+        <span class="style1">Drag-n-Drop your file here.</span>
+      </div>
+      <div ID="code_zone">
+	     <div ID="code" align="left">
+          <center>
+            <p class="style2" style="padding-top: 120px;">PL/SQL code will go here.</p>
+          </center>
+       </div>
+      </div>
+    <div>
+        <output id="list"></output>
+    </div>
+     <input ID="md5_checkbox" type="checkbox" checked value="qq"><span class="style3">Include Md5 check</span>
+	</center>
+  </body>
+</html>
