@@ -1,8 +1,8 @@
 /*  blob-JS v1.2
 (c) 2013 by Filip Van Vooren    
-    http://www.oratronik.de	
-	
-	No warranties. Use at your own risk!
+    http://www.oratronik.de 
+    
+    No warranties. Use at your own risk!
 */
 var blobJS = { 
     is_FileAPI_supported : false,
@@ -13,7 +13,7 @@ var blobJS = {
     plsql_dump           : new Array(),
     _files               : undefined,   
     _bytes_per_row       : 64,
-	_version             : 'blob-JS (v1.2)',
+    _version             : 'blob-JS (v1.2)',
     
     
     // Check if the File API is available in the browser.
@@ -69,7 +69,7 @@ var blobJS = {
          this._files = p1;    
       }
 
-	  console.log(this._version);
+      console.log(this._version);
       
       if ( this.is_FileAPI_supported && this._files) {
                 console.log('blobJS object initialized');
@@ -105,13 +105,13 @@ var blobJS = {
             // For details see => http://www.khronos.org/registry/typedarray/specs/latest/#5
             var l_ArrayBuffer = e.target.result;           
             var l_byte_view   = new Uint8Array(l_ArrayBuffer);             
-			
+            
             var l_bytecnt     = 0;
             var l_buffer      = '';
             var l_row         = '';
             var l_rowcnt      = 1;
-			var l_time_start  = new Date;
-			var l_time_end;
+            var l_time_start  = new Date;
+            var l_time_end;
 
             // Private function for adding PL/SQL wrapper code
             function _addWrapper(p1) {
@@ -163,9 +163,9 @@ var blobJS = {
                          +  cr  + '  END IF;'
                 }
                 
-				l_sql += cr2 + '  --> Your code to save the blob must be inserted here <--'
-				       + cr  + '  --> Your code to save the blob must be inserted here <--';
-				
+                l_sql += cr2 + '  --> Your code to save the blob must be inserted here <--'
+                       + cr  + '  --> Your code to save the blob must be inserted here <--';
+                
                 l_sql += cr2 + '  dbms_lob.freetemporary(lob_loc => my_blob);'
                       +  cr  + 'END;'
                       +  cr  + '/'
@@ -225,11 +225,11 @@ var blobJS = {
                // p1 = true|false, p2=slot# if success
                p_user_callback_func(true,blobJS.plsql_dump.length - 1);   
             }
-			
-			var l_time_end = new Date();
-			var l_duration = l_time_end - l_time_start;
-			console.log('Duration = ' + l_duration + ' ms');
-            console.log('Done.');           			
+            
+            var l_time_end = new Date();
+            var l_duration = l_time_end - l_time_start;
+            console.log('Duration = ' + l_duration + ' ms');
+            console.log('Done.');                       
         } // _callBack_Dump()
   
   
@@ -248,7 +248,7 @@ var blobJS = {
          }
                       
          console.log('Reading file "' + this._files[p1].name + '" ...');
-         		 		 
+                         
          this.reader.onloadend = function(e) { _callBack_Dump(p1,
                                                               blobJS._files[p1].name,
                                                               blobJS._files[p1].size,
